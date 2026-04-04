@@ -1,0 +1,269 @@
+server {
+    listen 8080;
+    server_name _;
+
+    root /home/site/wwwroot;
+    index index.php;
+
+    client_max_body_size 100M;
+
+    # ── Security: block access to sensitive paths ─────────────────────────
+
+    # Block .htaccess and other dot-files
+    location ~ /\. {
+        deny all;
+        return 404;
+    }
+
+    # Block access to PHP error/session logs
+    location ~ ^/logs(/|$) {
+        deny all;
+        return 404;
+    }
+
+    # Block access to uploaded file attachments (served via API only)
+    location ~ ^/tmp_attach(/|$) {
+        deny all;
+        return 404;
+    }
+
+    # Block the Nginx config file itself
+    location = /default {
+        deny all;
+        return 404;
+    }
+
+    # ── Slim sub-application routing ──────────────────────────────────────
+
+    # Apache mod_dir auto-appends trailing slashes; Nginx does not.
+    # Exact-match locations have highest priority (above ^~ prefix locations).
+    location = /session { return 301 https://$host$request_uri/; }
+    location = /api { return 301 https://$host$request_uri/; }
+    location = /v2 { return 301 https://$host$request_uri/; }
+    location = /admin { return 301 https://$host$request_uri/; }
+    location = /finance { return 301 https://$host$request_uri/; }
+    location = /kiosk { return 301 https://$host$request_uri/; }
+    location = /plugins { return 301 https://$host$request_uri/; }
+    location = /external { return 301 https://$host$request_uri/; }
+    location = /setup { return 301 https://$host$request_uri/; }
+    location = /people { return 301 https://$host$request_uri/; }
+    location = /groups { return 301 https://$host$request_uri/; }
+    location = /event { return 301 https://$host$request_uri/; }
+
+    location ^~ /session {
+        try_files $uri /session/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /api {
+        try_files $uri /api/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /v2 {
+        try_files $uri /v2/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /admin {
+        try_files $uri /admin/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /finance {
+        try_files $uri /finance/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /kiosk {
+        try_files $uri /kiosk/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /plugins {
+        try_files $uri /plugins/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /external {
+        try_files $uri /external/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /setup {
+        try_files $uri /setup/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /people {
+        try_files $uri /people/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /groups {
+        try_files $uri /groups/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    location ^~ /event {
+        try_files $uri /event/index.php$is_args$args;
+
+        location ~ \.php$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            include        fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param  HTTPS on;
+            fastcgi_param  SERVER_PORT 443;
+            fastcgi_param  HTTP_HOST $host;
+            fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+            fastcgi_param  REQUEST_URI $request_uri;
+        }
+    }
+
+    # ── Static assets ──────────────────────────────────────────────────────
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|map)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # ── Legacy / root routing ─────────────────────────────────────────────
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        include        fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param  HTTPS on;
+        fastcgi_param  SERVER_PORT 443;
+        fastcgi_param  HTTP_HOST $host;
+        fastcgi_param  HTTP_X_FORWARDED_PROTO https;
+    }
+}
